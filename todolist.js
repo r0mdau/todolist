@@ -19,37 +19,56 @@ on en crée une vide sous forme d'array avant la suite */
 
 /* On affiche la todolist et le formulaire */
 .get('/todo', function(req, res) {
+    var data = Array();
     if(req.session.todolist == ''){
 	var file = fs.readFileSync("liste","UTF-8");
-	var datas = file.split("\n");
-	var data = new Array();
+	var datas = file.split("\n");	
 	for(var i = 0 ; i < datas.length ; i++){
 	    if(datas[i] != ''){
-		req.session.todolist.push(datas[i]);
-		data[i] = datas[i];
+		var da = JSON.parse(datas[i]);
+		var text = da.tache;
+		if(typeof(da.date) != 'undefined')
+		    text += " "+da.date+" "+da.heure;
+		req.session.todolist.push(da);
+		data[i] = text;
 	    }
 	}
-	res.render('index.ejs', {todolist: data});
     }else{
 	var content = '';
 	for(var i = 0; i < req.session.todolist.length ; i++){
-	    content += req.session.todolist[i]+"\n";
+	    if(typeof(req.session.todolist[i].date) != 'undefined')
+		content += "{\"tache\" : \""+req.session.todolist[i].tache+"\", \"date\" : \""+req.session.todolist[i].date+"\", \"heure\" : \""+req.session.todolist[i].heure+"\"}";
+	    else
+		content += "{\"tache\" : \""+req.session.todolist[i].tache+"\"}";
+	    content += "\n";
 	}
 	fs.writeFile("liste", content, "UTF-8");
-	res.render('index.ejs', {todolist: req.session.todolist});
+	
+	for(var i = 0 ; i < req.session.todolist.length ; i++){
+	    var text = req.session.todolist[i].tache;
+	    if(typeof(req.session.todolist[i].date) != 'undefined')
+		text += " "+req.session.todolist[i].date+" "+req.session.todolist[i].heure;
+	    data[i] = text;
+	}
     }
+    res.render('index.ejs', {todolist: data});
 })
 
 /* On ajoute un élément à la todolist */
 .post('/todo/ajouter/', function(req, res) {
     if (req.body.newtodo != '') {
 	var details = '';
-	if(req.body.newdate != '' && req.body.newclock != '')
-	    details = req.body.newtodo+" "+req.body.newdate+" "+req.body.newclock;
-	else
-	    details = req.body.newtodo;
-        req.session.todolist.push(details);
-	fs.appendFileSync("todo", details+"\n", "UTF-8");
+	var json = {};
+	if(req.body.newdate != '' && req.body.newclock != ''){
+	    details = "{\"tache\" : \""+req.body.newtodo+"\", \"date\" : \""+req.body.newdate+"\", \"heure\" : \""+req.body.newclock+"\"}";
+	    json = {tache : req.body.newtodo, date : req.body.newdate, heure : req.body.newclock};
+	}
+	else{
+	    details = "{\"tache\" : \""+req.body.newtodo+"\"}";
+	    json = {tache : req.body.newtodo};
+	}
+        req.session.todolist.push(json);
+	fs.appendFileSync("liste", details+"\n", "UTF-8");
     }
     res.redirect('/todo');
 })
