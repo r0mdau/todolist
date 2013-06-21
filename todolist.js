@@ -1,7 +1,13 @@
 var express = require('express');
 var app = express();
-
 var fs = require('fs');
+
+function objectToString(obj) {
+    if(typeof(obj.date) != 'undefined' && typeof(obj.clock) != 'undefined')
+	return "{\"todo\" : \""+obj.todo+"\", \"date\" : \""+obj.date+"\", \"clock\" : \""+obj.clock+"\"}\n";
+    else
+	return "{\"todo\" : \""+obj.todo+"\"}\n";
+}
 
 /* On utilise les cookies et les sessions */
 app.use(express.cookieParser())
@@ -11,9 +17,8 @@ app.use(express.cookieParser())
 /* S'il n'y a pas de todolist dans la session,
 on en crée une vide sous forme d'array avant la suite */
 .use(function(req, res, next){
-    if (typeof(req.session.todolist) == 'undefined') {
+    if (typeof(req.session.todolist) == 'undefined')
         req.session.todolist = [];
-    }
     next();
 })
 
@@ -26,28 +31,23 @@ on en crée une vide sous forme d'array avant la suite */
 	for(var i = 0 ; i < datas.length ; i++){
 	    if(datas[i] != ''){
 		var da = JSON.parse(datas[i]);
-		var text = da.tache;
+		var text = da.todo;
 		if(typeof(da.date) != 'undefined')
-		    text += " "+da.date+" "+da.heure;
+		    text += " "+da.date+" "+da.clock;
 		req.session.todolist.push(da);
 		data[i] = text;
 	    }
 	}
     }else{
 	var content = '';
-	for(var i = 0; i < req.session.todolist.length ; i++){
-	    if(typeof(req.session.todolist[i].date) != 'undefined')
-		content += "{\"tache\" : \""+req.session.todolist[i].tache+"\", \"date\" : \""+req.session.todolist[i].date+"\", \"heure\" : \""+req.session.todolist[i].heure+"\"}";
-	    else
-		content += "{\"tache\" : \""+req.session.todolist[i].tache+"\"}";
-	    content += "\n";
-	}
+	for(var i = 0; i < req.session.todolist.length ; i++)
+	    content += objectToString(req.session.todolist[i]);
 	fs.writeFile("liste", content, "UTF-8");
 	
 	for(var i = 0 ; i < req.session.todolist.length ; i++){
-	    var text = req.session.todolist[i].tache;
-	    if(typeof(req.session.todolist[i].date) != 'undefined')
-		text += " "+req.session.todolist[i].date+" "+req.session.todolist[i].heure;
+	    var text = req.session.todolist[i].todo;
+	    if(typeof(req.session.todolist[i].date) != 'undefined' && typeof(req.session.todolist[i].clock) != 'undefined')
+		text += " "+req.session.todolist[i].date+" "+req.session.todolist[i].clock;
 	    data[i] = text;
 	}
     }
@@ -56,28 +56,17 @@ on en crée une vide sous forme d'array avant la suite */
 
 /* On ajoute un élément à la todolist */
 .post('/todo/ajouter/', function(req, res) {
-    if (req.body.newtodo != '') {
-	var details = '';
-	var json = {};
-	if(req.body.newdate != '' && req.body.newclock != ''){
-	    details = "{\"tache\" : \""+req.body.newtodo+"\", \"date\" : \""+req.body.newdate+"\", \"heure\" : \""+req.body.newclock+"\"}";
-	    json = {tache : req.body.newtodo, date : req.body.newdate, heure : req.body.newclock};
-	}
-	else{
-	    details = "{\"tache\" : \""+req.body.newtodo+"\"}";
-	    json = {tache : req.body.newtodo};
-	}
-        req.session.todolist.push(json);
-	fs.appendFileSync("liste", details+"\n", "UTF-8");
+    if (req.body.todo != '') {
+        req.session.todolist.push(req.body);
+	fs.appendFileSync("liste", objectToString(req.body)+"\n", "UTF-8");
     }
     res.redirect('/todo');
 })
 
 /* Supprime un élément de la todolist */
 .get('/todo/supprimer/:id', function(req, res) {
-    if (req.params.id != '') {
+    if (req.params.id != '')
         req.session.todolist.splice(req.params.id, 1);
-    }
     res.redirect('/todo');
 })
 
