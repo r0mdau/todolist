@@ -1,3 +1,11 @@
+## 0.2.0 (25 Juin 2013)
+
+Du JSON
+
+- **Fonctionnalités:**
+  - fichier liste au format JSON
+  - données au format JSON
+  - refactorisation du code
 
 ## 0.1.0 (20 Mai 2013)
 
@@ -13,5 +21,5 @@ Première version de la Todolist
 1. Script qui lit le fichier et envoit un sms de rappel en fonction de la date et de l'heure précisé.
 2. Interface de saisie du numéro qui recevra le rappel.
 3. Evènement de récurrence des rappels ?
-4. Formater les données insérées dans le fichier liste au format JSON.
+4. Gérer un annuaire que l'on peut remplir
 5. Des idées ?
