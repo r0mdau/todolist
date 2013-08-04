@@ -1,6 +1,9 @@
 var express = require('express');
 var app = express();
 var fs = require('fs');
+var auth = express.basicAuth(function(user, pass) {
+	return (user == "romain" && pass == "dauby");
+}, 'Area 51');
 
 function objectToString(obj) {
     if(typeof(obj.date) != 'undefined' && typeof(obj.clock) != 'undefined')
@@ -13,7 +16,6 @@ function objectToString(obj) {
 app.use(express.cookieParser())
 .use(express.session({secret: 'todosecret'}))
 .use(express.bodyParser())
-
 /* S'il n'y a pas de todolist dans la session,
 on en crée une vide sous forme d'array avant la suite */
 .use(function(req, res, next){
@@ -22,6 +24,8 @@ on en crée une vide sous forme d'array avant la suite */
     next();
 })
 
+/* Http authentification */
+.get('/', auth)
 /* On affiche la todolist et le formulaire */
 .get('/todo', function(req, res) {
     var data = Array();
