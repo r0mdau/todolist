@@ -25,7 +25,7 @@ on en crée une vide sous forme d'array avant la suite */
 })
 
 /* Http authentification */
-.get('/', auth)
+.get('/todo', auth)
 /* On affiche la todolist et le formulaire */
 .get('/todo', function(req, res) {
     var data = Array();
