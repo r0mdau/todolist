@@ -1,3 +1,10 @@
+## 0.3.0 (04 Aout 2013)
+
+Basic Auth
+
+- **Fonctionnalités:**
+  - L'application est dérmais protée par une authentification avec nom d'utilisateur et mot de passe
+
 ## 0.2.0 (25 Juin 2013)
 
 Du JSON
