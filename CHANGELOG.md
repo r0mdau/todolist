@@ -3,7 +3,7 @@
 Basic Auth
 
 - **Fonctionnalités:**
-  - L'application est dérmais protée par une authentification avec nom d'utilisateur et mot de passe
+  - L'application est désormais protégée par une authentification avec nom d'utilisateur et mot de passe
 
 ## 0.2.0 (25 Juin 2013)
 
