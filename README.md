@@ -32,7 +32,7 @@ Le but final est de créer un script automatisé qui envoit un sms à l'heure et
 
 ## Bug tracker
 
-Si vous avez des question ou des bugs sur le projet, [merci d'ouvrir un ticket](https://github.com/r0mdau/todolist/issues). Avant d'ouvrir un ticket, merci de vérifier que la réponse à votre demande n'a jamais été traitée.
+Si vous avez des questions ou des bugs sur le projet, [merci d'ouvrir un ticket](https://github.com/r0mdau/todolist/issues). Avant d'ouvrir un ticket, merci de vérifier que la réponse à votre demande n'a jamais été traitée.
 
 ## Communauté
 
